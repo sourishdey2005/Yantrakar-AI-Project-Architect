@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 import type { ProjectIdea } from '../types';
 
@@ -59,26 +58,22 @@ const projectSchema = {
 };
 
 export const generateProjectIdea = async (userInput: string): Promise<ProjectIdea> => {
-  const apiKey = process.env.API_KEY;
-  if (!apiKey) {
-    throw new Error("API Key is not configured. Please add the API_KEY environment variable to your project settings on Vercel.");
-  }
+  // Fix: Per coding guidelines, initialize GoogleGenAI directly with process.env.API_KEY.
+  // This resolves the TypeScript error and aligns with API key handling rules.
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-  const ai = new GoogleGenAI({ apiKey });
+  // Fix: Separated system instruction from user prompt for clarity and correctness.
+  const systemInstruction = `You are an expert engineering mentor named 'Yantrakar'. Your role is to provide detailed, actionable, and comprehensive project blueprints for engineers based on their requirements. The output MUST be a single, valid JSON object that adheres to the provided schema. Do not include any text outside of the JSON object, including markdown tags like \`\`\`json.`;
+  const contents = `The user's request is: "${userInput}"
 
-  const prompt = `
-    You are an expert engineering mentor named 'Yantrakar'. Your role is to provide detailed, actionable, and comprehensive project blueprints for engineers based on their requirements.
-
-    The user's request is: "${userInput}"
-
-    Based on this request, generate a complete project plan. The output MUST be a single, valid JSON object that adheres to the provided schema. Do not include any text outside of the JSON object, including markdown tags like \`\`\`json.
-  `;
+Based on this request, generate a complete project plan.`;
 
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-pro',
-      contents: prompt,
+      contents: contents,
       config: {
+        systemInstruction,
         responseMimeType: "application/json",
         responseSchema: projectSchema,
         temperature: 0.7,
