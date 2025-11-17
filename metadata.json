@@ -1,0 +1,5 @@
+{
+  "name": "Yantrakar: AI Project Architect",
+  "description": "An AI-powered application that provides detailed project blueprints for engineers. Users can describe their needs, and Yantrakar generates comprehensive project ideas, including tech stacks, step-by-step guidelines, and resources.",
+  "requestFramePermissions": []
+}
