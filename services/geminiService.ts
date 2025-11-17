@@ -2,14 +2,6 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { ProjectIdea } from '../types';
 
-const API_KEY = process.env.API_KEY;
-
-if (!API_KEY) {
-  throw new Error("API_KEY environment variable not set");
-}
-
-const ai = new GoogleGenAI({ apiKey: API_KEY });
-
 const projectSchema = {
   type: Type.OBJECT,
   properties: {
@@ -67,6 +59,13 @@ const projectSchema = {
 };
 
 export const generateProjectIdea = async (userInput: string): Promise<ProjectIdea> => {
+  const apiKey = process.env.API_KEY;
+  if (!apiKey) {
+    throw new Error("API Key is not configured. Please add the API_KEY environment variable to your project settings on Vercel.");
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
+
   const prompt = `
     You are an expert engineering mentor named 'Yantrakar'. Your role is to provide detailed, actionable, and comprehensive project blueprints for engineers based on their requirements.
 
@@ -91,6 +90,6 @@ export const generateProjectIdea = async (userInput: string): Promise<ProjectIde
     return projectData;
   } catch (error) {
     console.error("Error generating project idea:", error);
-    throw new Error("Failed to get a valid response from the AI model.");
+    throw new Error("Failed to get a valid response from the AI model. The service may be busy or the API key may be invalid.");
   }
 };

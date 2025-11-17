@@ -28,7 +28,11 @@ const App: React.FC = () => {
       setProjectIdea(idea);
     } catch (err) {
       console.error(err);
-      setError('Failed to generate project idea. The model may be busy. Please try again.');
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unknown error occurred. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
