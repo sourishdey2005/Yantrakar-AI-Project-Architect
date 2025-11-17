@@ -11,17 +11,31 @@ export const ApiKeyError: React.FC = () => {
         </div>
         <div className="ml-4">
           <h3 className="text-lg font-bold text-amber-300">API Key Configuration Required</h3>
-          <div className="mt-2 text-sm text-amber-200 space-y-2">
-            <p>This application requires a Google Gemini API key to function. The key is missing or not configured correctly in your project settings.</p>
-            <p className="font-semibold">To resolve this, please follow these steps:</p>
-            <ol className="list-decimal list-inside space-y-1 pl-2 font-roboto-mono">
-              <li>Go to your project's deployment settings (e.g., on Vercel, Netlify, etc.).</li>
-              <li>Find the "Environment Variables" section.</li>
-              {/* Fix: Use API_KEY instead of VITE_API_KEY */}
-              <li>Create a new variable with the exact name: <code className="bg-slate-700 px-1.5 py-0.5 rounded-md text-sky-300">API_KEY</code></li>
-              <li>Set its value to your Google Gemini API key.</li>
-              <li>Redeploy your application for the changes to take effect.</li>
-            </ol>
+          <div className="mt-2 text-sm text-amber-200 space-y-4">
+            <p>This application requires a Google Gemini API key to function. To make it work, you need to provide your key via an environment variable.</p>
+            
+            <div>
+              <p className="font-semibold">For Local Development:</p>
+              <ol className="list-decimal list-inside space-y-1 pl-2 mt-1 font-roboto-mono">
+                <li>Create a new file named <code className="bg-slate-700 px-1.5 py-0.5 rounded-md text-sky-300">.env</code> in the root directory of your project.</li>
+                <li>Add the following line to the <code className="bg-slate-700 px-1.5 py-0.5 rounded-md">.env</code> file:</li>
+                <li className="!ml-6"><code className="bg-slate-700 px-1.5 py-0.5 rounded-md text-sky-300">VITE_API_KEY=YOUR_GEMINI_API_KEY_HERE</code></li>
+                <li>Replace <code className="bg-slate-700 px-1.5 py-0.5 rounded-md">YOUR_GEMINI_API_KEY_HERE</code> with your actual key.</li>
+                <li>Restart your development server for the changes to take effect.</li>
+              </ol>
+            </div>
+
+            <div>
+              <p className="font-semibold">For Deployment (e.g., on Vercel, Netlify):</p>
+               <ol className="list-decimal list-inside space-y-1 pl-2 mt-1 font-roboto-mono">
+                <li>Go to your project's deployment settings on your hosting provider.</li>
+                <li>Find the "Environment Variables" section.</li>
+                <li>Create a new variable with the exact name: <code className="bg-slate-700 px-1.5 py-0.5 rounded-md text-sky-300">VITE_API_KEY</code></li>
+                <li>Set its value to your Google Gemini API key.</li>
+                <li>Redeploy your application.</li>
+              </ol>
+            </div>
+             <p className="text-xs text-amber-400/80 pt-2">Note: The <code className="font-roboto-mono bg-slate-700/50 px-1 rounded">VITE_</code> prefix is required to expose the variable securely to the browser-side code.</p>
           </div>
         </div>
       </div>

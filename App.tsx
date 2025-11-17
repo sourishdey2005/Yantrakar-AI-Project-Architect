@@ -7,7 +7,6 @@ import { ProjectInput } from './components/ProjectInput';
 import { ProjectDisplay } from './components/ProjectDisplay';
 import { Loader } from './components/Loader';
 import { Welcome } from './components/Welcome';
-import { ApiKeyError } from './components/ApiKeyError';
 
 const App: React.FC = () => {
   const [userInput, setUserInput] = useState<string>('');
@@ -66,14 +65,12 @@ const App: React.FC = () => {
             isLoading={isLoading}
           />
 
+          {/* Fix: Simplified error display. The special case for API key errors is removed
+              as per the new guidelines, which state the app should not handle API key configuration. */}
           {error && (
-            error.includes("API Key is not configured") ? (
-              <ApiKeyError />
-            ) : (
-              <div className="mt-6 bg-red-900/50 border border-red-700 text-red-300 px-4 py-3 rounded-lg text-center">
-                <p>{error}</p>
-              </div>
-            )
+            <div className="mt-6 bg-red-900/50 border border-red-700 text-red-300 px-4 py-3 rounded-lg text-center">
+              <p>{error}</p>
+            </div>
           )}
 
           <div className="mt-10">
