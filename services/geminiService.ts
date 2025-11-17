@@ -58,11 +58,16 @@ const projectSchema = {
 };
 
 export const generateProjectIdea = async (userInput: string): Promise<ProjectIdea> => {
-  // Fix: Per coding guidelines, initialize GoogleGenAI directly with process.env.API_KEY.
-  // This resolves the TypeScript error and aligns with API key handling rules.
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  // Fix: Adhere to guideline to use process.env.API_KEY. This also resolves the TypeScript error.
+  const apiKey = process.env.API_KEY;
 
-  // Fix: Separated system instruction from user prompt for clarity and correctness.
+  if (!apiKey) {
+    // Fix: Updated error message to be generic and to be caught by the UI handler.
+    throw new Error("API Key is not configured");
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
+
   const systemInstruction = `You are an expert engineering mentor named 'Yantrakar'. Your role is to provide detailed, actionable, and comprehensive project blueprints for engineers based on their requirements. The output MUST be a single, valid JSON object that adheres to the provided schema. Do not include any text outside of the JSON object, including markdown tags like \`\`\`json.`;
   const contents = `The user's request is: "${userInput}"
 
@@ -85,6 +90,14 @@ Based on this request, generate a complete project plan.`;
     return projectData;
   } catch (error) {
     console.error("Error generating project idea:", error);
+    // Check if the error is an instance of Error to access the message property safely
+    if (error instanceof Error) {
+        // Provide more specific feedback for common issues
+        if (error.message.includes('API key not valid')) {
+            // Fix: Refer to API_KEY instead of VITE_API_KEY.
+            throw new Error('The provided API Key is invalid. Please check your API_KEY environment variable.');
+        }
+    }
     throw new Error("Failed to get a valid response from the AI model. The service may be busy or the API key may be invalid.");
   }
 };

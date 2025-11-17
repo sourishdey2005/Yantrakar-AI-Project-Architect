@@ -7,6 +7,7 @@ import { ProjectInput } from './components/ProjectInput';
 import { ProjectDisplay } from './components/ProjectDisplay';
 import { Loader } from './components/Loader';
 import { Welcome } from './components/Welcome';
+import { ApiKeyError } from './components/ApiKeyError';
 
 const App: React.FC = () => {
   const [userInput, setUserInput] = useState<string>('');
@@ -38,6 +39,20 @@ const App: React.FC = () => {
     }
   }, [userInput]);
 
+  const renderContent = () => {
+    if (isLoading) {
+      return <Loader />;
+    }
+    if (error) {
+      // The error display is now handled outside this function
+      return null;
+    }
+    if (projectIdea) {
+      return <ProjectDisplay idea={projectIdea} />;
+    }
+    return <Welcome />;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-slate-800 text-gray-200">
       <div className="container mx-auto px-4 py-8 md:py-12">
@@ -52,15 +67,17 @@ const App: React.FC = () => {
           />
 
           {error && (
-            <div className="mt-6 bg-red-900/50 border border-red-700 text-red-300 px-4 py-3 rounded-lg text-center">
-              <p>{error}</p>
-            </div>
+            error.includes("API Key is not configured") ? (
+              <ApiKeyError />
+            ) : (
+              <div className="mt-6 bg-red-900/50 border border-red-700 text-red-300 px-4 py-3 rounded-lg text-center">
+                <p>{error}</p>
+              </div>
+            )
           )}
 
           <div className="mt-10">
-            {isLoading && <Loader />}
-            {!isLoading && !projectIdea && <Welcome />}
-            {projectIdea && <ProjectDisplay idea={projectIdea} />}
+            {renderContent()}
           </div>
         </main>
       </div>
